@@ -1,2 +1,186 @@
 # Joe
 库存交易网站
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>库存售卖价格计算器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .result h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .result-item {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .reset-btn {
+            background-color: #f44336;
+            margin-top: 15px;
+        }
+
+        .reset-btn:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>库存售卖价格计算器</h1>
+        
+        <div class="form-group">
+            <label for="totalQuantity">总存货数量：</label>
+            <input type="number" id="totalQuantity" placeholder="请输入存货总数（如：100）" min="0" step="1">
+        </div>
+
+        <div class="form-group">
+            <label for="unitPrice">单件价格（元）：</label>
+            <input type="number" id="unitPrice" placeholder="请输入每件的售价（如：15.5）" min="0" step="0.01">
+        </div>
+
+        <div class="form-group">
+            <label for="soldQuantity">已卖出数量：</label>
+            <input type="number" id="soldQuantity" placeholder="请输入已卖出的数量（如：30）" min="0" step="1">
+        </div>
+
+        <button onclick="calculatePrice()">计算库存价值</button>
+        <button class="reset-btn" onclick="resetForm()">重置表单</button>
+
+        <div class="result" id="resultArea" style="display: none;">
+            <h3>计算结果</h3>
+            <div class="result-item">总库存价值：<span id="totalValue" class="highlight"></span> 元</div>
+            <div class="result-item">已卖出价值：<span id="soldValue" class="highlight"></span> 元</div>
+            <div class="result-item">剩余库存数量：<span id="remainingQuantity" class="highlight"></span> 件</div>
+            <div class="result-item">剩余库存价值：<span id="remainingValue" class="highlight"></span> 元</div>
+        </div>
+    </div>
+
+    <script>
+        // 核心计算函数
+        function calculatePrice() {
+            // 获取用户输入的值
+            const totalQuantity = parseFloat(document.getElementById('totalQuantity').value) || 0;
+            const unitPrice = parseFloat(document.getElementById('unitPrice').value) || 0;
+            const soldQuantity = parseFloat(document.getElementById('soldQuantity').value) || 0;
+
+            // 验证输入合法性
+            if (totalQuantity < 0 || unitPrice < 0 || soldQuantity < 0) {
+                alert("请输入有效的非负数！");
+                return;
+            }
+
+            if (soldQuantity > totalQuantity) {
+                alert("已卖出数量不能超过总存货数量！");
+                return;
+            }
+
+            // 计算核心数据
+            const totalValue = (totalQuantity * unitPrice).toFixed(2); // 总价值
+            const soldValue = (soldQuantity * unitPrice).toFixed(2);   // 已卖出价值
+            const remainingQuantity = (totalQuantity - soldQuantity).toFixed(0); // 剩余数量
+            const remainingValue = (remainingQuantity * unitPrice).toFixed(2);   // 剩余价值
+
+            // 显示结果
+            document.getElementById('totalValue').textContent = totalValue;
+            document.getElementById('soldValue').textContent = soldValue;
+            document.getElementById('remainingQuantity').textContent = remainingQuantity;
+            document.getElementById('remainingValue').textContent = remainingValue;
+            
+            // 显示结果区域
+            document.getElementById('resultArea').style.display = 'block';
+        }
+
+        // 重置表单函数
+        function resetForm() {
+            document.getElementById('totalQuantity').value = '';
+            document.getElementById('unitPrice').value = '';
+            document.getElementById('soldQuantity').value = '';
+            document.getElementById('resultArea').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
